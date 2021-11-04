@@ -132,7 +132,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,7 +143,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -189,6 +189,88 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/02/Score-based-generative-modeling/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ge Li">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ge Li">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/02/Score-based-generative-modeling/" class="post-title-link" itemprop="url">Score-based generative modeling</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-11-02 12:10:56" itemprop="dateCreated datePublished" datetime="2021-11-02T12:10:56-04:00">2021-11-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-11-04 17:08:06" itemprop="dateModified" datetime="2021-11-04T17:08:06-04:00">2021-11-04</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Paper-Reading/" itemprop="url" rel="index"><span itemprop="name">Paper Reading</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="what-is-a-score">What is a score</h1>
+<p>The key idea of score-based generative models is to calcuate the the gradient field of the log probability density function, or the <strong>score function</strong>, which is defined as: <span class="math display">\[ \nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x})\]</span> where <span class="math inline">\(p(\textbf{x})\)</span> is a differentiable pdf.</p>
+<p>To estiamte the score function, we train a score-based model <span class="math inline">\(\textbf{s}_{\theta}(\textbf{x})\)</span> by minimizing the following loss function: <span class="math display">\[\mathbb{E}_{p(\mathbf{x})}\left[\left\|\nabla_{\mathbf{x}} \log p(\mathbf{x})-\mathbf{s}_{\theta}(\mathbf{x})\right\|_{2}^{2}\right]\]</span> , which compares the squared <span class="math inline">\(L_2\)</span> distance between the ground-truth data score and the score-based model. Direct computation of this loss function, however, is not feasible as we have not knowledge of the ground truth score function <span class="math inline">\(\nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x})\)</span>. Instead, the loss function minized using the method of <strong>score matching</strong>, where the knowledge of ground-truth data score function is not required.</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/25/review_prompt/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -220,7 +302,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-10-31 21:18:58" itemprop="dateModified" datetime="2021-10-31T21:18:58-04:00">2021-10-31</time>
+        <time title="Modified: 2021-11-03 22:35:49" itemprop="dateModified" datetime="2021-11-03T22:35:49-04:00">2021-11-03</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
