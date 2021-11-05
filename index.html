@@ -143,7 +143,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -220,7 +220,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-11-04 17:08:06" itemprop="dateModified" datetime="2021-11-04T17:08:06-04:00">2021-11-04</time>
+        <time title="Modified: 2021-11-05 14:16:11" itemprop="dateModified" datetime="2021-11-05T14:16:11-04:00">2021-11-05</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -228,7 +228,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Paper-Reading/" itemprop="url" rel="index"><span itemprop="name">Paper Reading</span></a>
+          <a href="/categories/paper-reading/" itemprop="url" rel="index"><span itemprop="name">paper reading</span></a>
         </span>
     </span>
 
@@ -242,10 +242,22 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="what-is-a-score">What is a score</h1>
-<p>The key idea of score-based generative models is to calcuate the the gradient field of the log probability density function, or the <strong>score function</strong>, which is defined as: <span class="math display">\[ \nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x})\]</span> where <span class="math inline">\(p(\textbf{x})\)</span> is a differentiable pdf.</p>
-<p>To estiamte the score function, we train a score-based model <span class="math inline">\(\textbf{s}_{\theta}(\textbf{x})\)</span> by minimizing the following loss function: <span class="math display">\[\mathbb{E}_{p(\mathbf{x})}\left[\left\|\nabla_{\mathbf{x}} \log p(\mathbf{x})-\mathbf{s}_{\theta}(\mathbf{x})\right\|_{2}^{2}\right]\]</span> , which compares the squared <span class="math inline">\(L_2\)</span> distance between the ground-truth data score and the score-based model. Direct computation of this loss function, however, is not feasible as we have not knowledge of the ground truth score function <span class="math inline">\(\nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x})\)</span>. Instead, the loss function minized using the method of <strong>score matching</strong>, where the knowledge of ground-truth data score function is not required.</p>
-
+          <h1 id="introduction">Introduction</h1>
+<p>Popular generative models can be grouped into two categories:</p>
+<ol type="1">
+<li><strong>likelihood-based models</strong> include autoregressive models, energy-based models (EBMs) normalizing flows and variational autoencoders (VAEs). These models learn the probability function directly.</li>
+<li><strong>implicit generative models</strong> such as GANs. These models represent the probability distribution implicitly by a model of a sampling process.</li>
+</ol>
+<p>Desipite of the greate success of these models, each has the limitations of its own. For example, flow-based models require a care design of architectures to construct reversible transform. EBMs need to have a tractable normalization constant. VAE relies on a surrogate loss (ELBO). GAN models are known for potentially unstable training and mode collapse problems.</p>
+<p>These problems can be addressed by score-based generative models, which represent probability distribution via the score function.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/02/Score-based-generative-modeling/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -302,7 +314,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-11-03 22:35:49" itemprop="dateModified" datetime="2021-11-03T22:35:49-04:00">2021-11-03</time>
+        <time title="Modified: 2021-11-05 14:16:15" itemprop="dateModified" datetime="2021-11-05T14:16:15-04:00">2021-11-05</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -310,7 +322,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Paper-Reading/" itemprop="url" rel="index"><span itemprop="name">Paper Reading</span></a>
+          <a href="/categories/paper-reading/" itemprop="url" rel="index"><span itemprop="name">paper reading</span></a>
         </span>
     </span>
 
@@ -328,7 +340,7 @@
 <p>This blog is based on: <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2107.13586.pdf">Liu et al. (2021) Pre-train, Prompt, and Predict: A Systematic Survey of Prompting Methods in Natural Language Processing.</a></p>
 </blockquote>
 <h1 id="introduction">Introduction</h1>
-<p>In a traditional supervised learning system (e.g. text classification or machine translation), we take an input <strong>x</strong>, and predict an output <strong>y</strong> based ona model <span class="math inline">\(P(\textbf{y}|\textbf{x};\theta)\)</span>. The main issue with supervised learning tasks is the requirement of larger amount of annotated label, which are usually not suffcicient for many task. This can be addressed by prompt-based learning. Instead of learning <span class="math inline">\(P(\textbf{y}|\textbf{x};\theta)\)</span>, prompt-based learning attempts to learn the probablity <span class="math inline">\(P(\textbf{x};\theta)\)</span> and use this probability to predict <strong>y</strong>.
+<p>In a traditional supervised learning system (e.g. text classification or machine translation), we take an input <strong>x</strong>, and predict an output <strong>y</strong> based ona model <span class="math inline">\(P(\textbf{y}|\textbf{x};\theta)\)</span>. The main issue with supervised learning tasks is the requirement of larger amount of annotated label, which are usually not suffcicient for many task. This can be addressed by prompt-based learning. Instead of learning <span class="math inline">\(P(\textbf{y}|\textbf{x};\theta)\)</span>, prompt-based learning attempts to learn the probablity <span class="math inline">\(P(\textbf{x};\theta)\)</span> and use this probability to predict <strong>y</strong>.</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/10/25/review_prompt/#more" rel="contents">

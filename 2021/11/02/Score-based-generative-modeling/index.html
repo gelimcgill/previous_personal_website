@@ -20,18 +20,18 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="What is a score The key idea of score-based generative models is to calcuate the the gradient field of the log probability density function, or the score function, which is defined as: \[ \nabla{\text">
+<meta name="description" content="Introduction Popular generative models can be grouped into two categories:  likelihood-based models include autoregressive models, energy-based models (EBMs) normalizing flows and variational autoenco">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Score-based generative modeling">
 <meta property="og:url" content="http://example.com/2021/11/02/Score-based-generative-modeling/index.html">
 <meta property="og:site_name" content="Ge Li">
-<meta property="og:description" content="What is a score The key idea of score-based generative models is to calcuate the the gradient field of the log probability density function, or the score function, which is defined as: \[ \nabla{\text">
+<meta property="og:description" content="Introduction Popular generative models can be grouped into two categories:  likelihood-based models include autoregressive models, energy-based models (EBMs) normalizing flows and variational autoenco">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-02T16:10:56.000Z">
-<meta property="article:modified_time" content="2021-11-04T21:08:06.649Z">
+<meta property="article:modified_time" content="2021-11-05T18:16:11.138Z">
 <meta property="article:author" content="Ge Li">
-<meta property="article:tag" content="Deep Learning">
-<meta property="article:tag" content="Generative Modeling">
+<meta property="article:tag" content="deep learning">
+<meta property="article:tag" content="generative models">
 <meta name="twitter:card" content="summary">
 
 
@@ -125,7 +125,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#what-is-a-score"><span class="nav-number">1.</span> <span class="nav-text">What is a score</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#what-is-a-score"><span class="nav-number">2.</span> <span class="nav-text">What is a score</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#langevin-dynamics"><span class="nav-number">3.</span> <span class="nav-text">Langevin dynamics</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -149,7 +149,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -227,7 +227,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-11-04 17:08:06" itemprop="dateModified" datetime="2021-11-04T17:08:06-04:00">2021-11-04</time>
+        <time title="Modified: 2021-11-05 14:16:11" itemprop="dateModified" datetime="2021-11-05T14:16:11-04:00">2021-11-05</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -235,7 +235,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Paper-Reading/" itemprop="url" rel="index"><span itemprop="name">Paper Reading</span></a>
+          <a href="/categories/paper-reading/" itemprop="url" rel="index"><span itemprop="name">paper reading</span></a>
         </span>
     </span>
 
@@ -249,9 +249,21 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="what-is-a-score">What is a score</h1>
+        <h1 id="introduction">Introduction</h1>
+<p>Popular generative models can be grouped into two categories:</p>
+<ol type="1">
+<li><strong>likelihood-based models</strong> include autoregressive models, energy-based models (EBMs) normalizing flows and variational autoencoders (VAEs). These models learn the probability function directly.</li>
+<li><strong>implicit generative models</strong> such as GANs. These models represent the probability distribution implicitly by a model of a sampling process.</li>
+</ol>
+<p>Desipite of the greate success of these models, each has the limitations of its own. For example, flow-based models require a care design of architectures to construct reversible transform. EBMs need to have a tractable normalization constant. VAE relies on a surrogate loss (ELBO). GAN models are known for potentially unstable training and mode collapse problems.</p>
+<p>These problems can be addressed by score-based generative models, which represent probability distribution via the score function.</p>
+<span id="more"></span>
+<h1 id="what-is-a-score">What is a score</h1>
 <p>The key idea of score-based generative models is to calcuate the the gradient field of the log probability density function, or the <strong>score function</strong>, which is defined as: <span class="math display">\[ \nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x})\]</span> where <span class="math inline">\(p(\textbf{x})\)</span> is a differentiable pdf.</p>
-<p>To estiamte the score function, we train a score-based model <span class="math inline">\(\textbf{s}_{\theta}(\textbf{x})\)</span> by minimizing the following loss function: <span class="math display">\[\mathbb{E}_{p(\mathbf{x})}\left[\left\|\nabla_{\mathbf{x}} \log p(\mathbf{x})-\mathbf{s}_{\theta}(\mathbf{x})\right\|_{2}^{2}\right]\]</span> , which compares the squared <span class="math inline">\(L_2\)</span> distance between the ground-truth data score and the score-based model. Direct computation of this loss function, however, is not feasible as we have not knowledge of the ground truth score function <span class="math inline">\(\nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x})\)</span>. Instead, the loss function minized using the method of <strong>score matching</strong>, where the knowledge of ground-truth data score function is not required.</p>
+<p>To estiamte the score function, we train a score-based model <span class="math inline">\(\textbf{s}_{\theta}(\textbf{x})\)</span> by minimizing the following loss function: <span class="math display">\[\mathbb{E}_{p(\mathbf{x})}\left[\left\|\nabla_{\mathbf{x}} \log p(\mathbf{x})-\mathbf{s}_{\theta}(\mathbf{x})\right\|_{2}^{2}\right]\]</span> , which compares the squared <span class="math inline">\(L_2\)</span> distance between the ground-truth data score and the score-based model. Direct computation of this loss function, however, is not feasible as we have not knowledge of the ground truth score function <span class="math inline">\(\nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x})\)</span>. Instead, the loss function minimized using the method of <strong>score matching</strong>, where the knowledge of ground-truth data score function is not required.</p>
+<h1 id="langevin-dynamics">Langevin dynamics</h1>
+<p>Langevin dynamics is a MCMC procedure to draw samples from a distribution <span class="math inline">\(p(\textbf{x})\)</span> using its score function <span class="math inline">\(\nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x})\)</span>. Initializing from an arbitarty prior <span class="math inline">\(\textbf{x}_0\sim \pi(\textbf{x})\)</span>, we have the following iteration procedure: <span class="math display">\[\textbf{x}_{i+1}\leftarrow \textbf{x}_{i} + \epsilon \nabla{\textbf{x}}\ \mathrm{ log} p(\textbf{x}) +\sqrt{2\epsilon}\textbf{z}_{i},i=0,1,\dots,...,K,\]</span> where $_i(0,) $, and <span class="math inline">\(\epsilon\)</span> is the step size. When <span class="math inline">\(\epsilon \rightarrow 0\)</span> and <span class="math inline">\(K\rightarrow \infty\)</span>, <span class="math inline">\(\textbf{x}_{K}\)</span> converges to a sample from <span class="math inline">\(p(\textbf{x})\)</span> under <em>some regularity conditions</em>.</p>
+<p>With a trained score model <span class="math inline">\(\textbf{s}_{\theta}(\textbf{x})\approx\nabla{\textbf{x}}\ \mathrm{log} (\textbf{x})\)</span>, we can perform the Langevin dynamics using: <span class="math display">\[\textbf{x}_{i+1}\leftarrow \textbf{x}_{i} + \epsilon \textbf{s}_{\theta}(\textbf{x}) +\sqrt{2\epsilon}\textbf{z}_{i},i=0,1,\dots,...,K.\]</span></p>
 
     </div>
 
@@ -261,8 +273,8 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
-              <a href="/tags/Generative-Modeling/" rel="tag"># Generative Modeling</a>
+              <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+              <a href="/tags/generative-models/" rel="tag"># generative models</a>
           </div>
 
         
