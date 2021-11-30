@@ -20,19 +20,19 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="Introduction Popular generative models can be grouped into two categories:  likelihood-based models include autoregressive models, energy-based models (EBMs) normalizing flows and variational autoenco">
+<meta name="description" content="This blog is based on: Song Generative Modeling by Estimating Gradients of the Data Distribution.  Introduction Popular generative models can be grouped into two categories:  likelihood-based models">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Score-based generative modeling">
 <meta property="og:url" content="http://example.com/2021/11/02/Score-based-generative-modeling/index.html">
 <meta property="og:site_name" content="Ge Li">
-<meta property="og:description" content="Introduction Popular generative models can be grouped into two categories:  likelihood-based models include autoregressive models, energy-based models (EBMs) normalizing flows and variational autoenco">
+<meta property="og:description" content="This blog is based on: Song Generative Modeling by Estimating Gradients of the Data Distribution.  Introduction Popular generative models can be grouped into two categories:  likelihood-based models">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-02T16:10:56.000Z">
-<meta property="article:modified_time" content="2021-11-06T20:42:50.128Z">
+<meta property="article:modified_time" content="2021-11-30T01:17:40.346Z">
 <meta property="article:author" content="Ge Li">
 <meta property="article:tag" content="deep learning">
 <meta property="article:tag" content="generative models">
-<meta property="article:tag" content="score-based">
+<meta property="article:tag" content="score-based model">
 <meta name="twitter:card" content="summary">
 
 
@@ -139,7 +139,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -228,7 +228,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-11-06 16:42:50" itemprop="dateModified" datetime="2021-11-06T16:42:50-04:00">2021-11-06</time>
+        <time title="Modified: 2021-11-29 20:17:40" itemprop="dateModified" datetime="2021-11-29T20:17:40-05:00">2021-11-29</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -250,7 +250,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="introduction">Introduction</h1>
+        <blockquote>
+<p>This blog is based on: <a target="_blank" rel="noopener" href="https://yang-song.github.io/blog/2021/score/">Song Generative Modeling by Estimating Gradients of the Data Distribution.</a></p>
+</blockquote>
+<h1 id="introduction">Introduction</h1>
 <p>Popular generative models can be grouped into two categories:</p>
 <ol type="1">
 <li><strong>likelihood-based models</strong> include autoregressive models, energy-based models (EBMs) normalizing flows and variational autoencoders (VAEs). These models learn the probability function directly.</li>
@@ -271,7 +274,7 @@
 <p>To tackle this issue, we can corrupte data with noise and train <span class="math inline">\(\textbf{s}_{\theta}(\textbf{x})\)</span> based on the noisy data. This strategy can populate low density regions and improve the accuracy of score estimation. The best corruption practice is to use multiple scale of noise perturbations simultaneously. Consider isotropic Gaussian noise with <span class="math inline">\(L\)</span> different standard deviations <span class="math inline">\(\sigma_1&lt;\sigma_2&lt;\dots&lt;\sigma_L\)</span>, we can perturb the data with each of the Gaussian noise and obtain <span class="math inline">\(L\)</span> perturbed data distributions: <span class="math display">\[p_{\sigma_i}(\textbf{x})=\int p(\textbf{y})\mathcal{N}(\textbf{x};\textbf{y},\sigma_i^2\mathcal{I}), i = 1,\dots, L\]</span> Sampling from <span class="math inline">\(p_{\sigma_i}(\textbf{x})\)</span> can be performed by sampling <span class="math inline">\(\textbf{x}\sim p(\textbf{x})\)</span> and computing <span class="math inline">\(\textbf{x}+\sigma_i\textbf{z}\)</span> with <span class="math inline">\(\textbf{z}\sim \mathcal{N}(0,\mathcal{I})\)</span>.</p>
 <p>For each perturbed distribution, we can estimate the corresponding score funtion <span class="math inline">\(\nabla{\textbf{x}}\ \mathrm{log} p_{\sigma_i}(\textbf{x})\)</span> by training a <strong>Noise Conditional Score-based Model</strong> <span class="math inline">\(\textbf{s}_{\theta}(\textbf{x},i)\)</span> with score matching, such that: <span class="math display">\[ \textbf{s}_{\theta}(\textbf{x},i)\approx \nabla{\textbf{x}}\ \mathrm{log} p_{\sigma_i}(\textbf{x}), \forall i=1,2,\dots,L\]</span></p>
 <p>The training objective is the weighted sum of Fisher divergence of all noise levels: <span class="math display">\[\sum_{i=1}^{L}\lambda(i)\mathbb{E}_{p_{\sigma_i}(\textbf{x})}[\|\textbf{s}_{\theta}(\textbf{x},i)-\nabla{\textbf{x}}\ \mathrm{log} p_{\sigma_i}(\textbf{x}) \|_2^2]\]</span> where <span class="math inline">\(\lambda(i)\)</span> is a positive weighting function and is usually set to be <span class="math inline">\(\lambda(i)=\sigma_i^2\)</span>. After training <span class="math inline">\(\textbf{s}_{\theta}(\textbf{x},i)\)</span>, we can produce samples from it by running an anealed Langevin dynamics for (Song and Ermon (2019)).</p>
-<p>First, <span class="math inline">\(M\)</span> steps of Langevin MCMC are performed to get a sample for each <span class="math inline">\(p_{\sigma_i}(\textbf{x})\)</span> sequentially: <span class="math display">\[\textbf{x}_i^m = \textbf{x}_i^{m-1} + \epsilon_i \textbf{s}_{\theta}(\textbf{x}_i^{m-1},i)=\sqrt{2\epsilon_i}\textbf{z}_i^{m},m=1,2,\dots,M,\]</span> where <span class="math inline">\(\epsilon_i&gt;0\)</span> is the step size and <span class="math inline">\(\textbf{z}_i^{m}\sim\mathcal{N}(0,I)\)</span>.</p>
+<p>First, <span class="math inline">\(M\)</span> steps of Langevin MCMC are performed to get a sample for each <span class="math inline">\(p_{\sigma_i}(\textbf{x})\)</span> sequentially: <span class="math display">\[\textbf{x}_i^m = \textbf{x}_i^{m-1} + \epsilon_i \textbf{s}_{\theta}(\textbf{x}_i^{m-1},i)+\sqrt{2\epsilon_i}\textbf{z}_i^{m},m=1,2,\dots,M,\]</span> where <span class="math inline">\(\epsilon_i&gt;0\)</span> is the step size and <span class="math inline">\(\textbf{z}_i^{m}\sim\mathcal{N}(0,I)\)</span>.</p>
 <p>Then, this step is repeated for <span class="math inline">\(i=N,N-1,\dots,1\)</span> with <span class="math inline">\(\mathbf{x}_{N}^{0} \sim \mathcal{N}\left(\mathbf{x} \mid \mathbf{0}, \sigma_{\max }^{2} \mathbf{I}\right) \text { and } \mathbf{x}_{i}^{0}=\mathbf{x}_{i+1}^{M}\)</span> when <span class="math inline">\(i&lt;N\)</span>. We have: <span class="math display">\[\textbf{x}_1^M \sim p_{\sigma_{\min}}(\textbf{x})\approx p_{\sigma_{data}}(\textbf{x}), \text { when } M\rightarrow \infty \text{ and } \epsilon_i\rightarrow 0.\]</span></p>
 <h1 id="data-perturbations-with-stochastic-differential-equations-sdes">Data perturbations with stochastic differential equations (SDEs)</h1>
 <p>We have only considered a finite number <span class="math inline">\(L\)</span> of noise processes, which can be generalized into infinite noise perturbations based on continuous-time stochastic processes Many. Stochastic processes (diffusion processes in particular) can be derived from stochastic differential equations (SDEs) with the following form: <span class="math display">\[d\textbf{x}=\textbf{f}(\textbf{x},t)dt+g(t)d\textbf{w},\]</span> where <span class="math inline">\(\textbf{f}\in\mathbb{R}^d \rightarrow \mathbb{R}^d\)</span> is called the drift coefficient, <span class="math inline">\(\textbf{g}\in \mathbb{R}\)</span> is called the diffusion coefficient, <span class="math inline">\(\textbf{w}\)</span> is a standard Brownian motion.</p>
@@ -305,7 +308,7 @@ t &amp; \leftarrow t+\Delta t
           <div class="post-tags">
               <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
               <a href="/tags/generative-models/" rel="tag"># generative models</a>
-              <a href="/tags/score-based/" rel="tag"># score-based</a>
+              <a href="/tags/score-based-model/" rel="tag"># score-based model</a>
           </div>
 
         
@@ -317,6 +320,9 @@ t &amp; \leftarrow t+\Delta t
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2021/11/06/Score-matching-methods/" rel="next" title="Score matching methods">
+                  Score matching methods <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
